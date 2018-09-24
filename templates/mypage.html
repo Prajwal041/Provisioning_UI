@@ -1,0 +1,1911 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head_title %} Welcome |  {% endblock %}
+
+{% block mypage %}
+
+    <style xmlns="http://www.w3.org/1999/html">
+.field {
+    width: 80%;
+    margin: 0 auto;
+}
+.left {
+    width: 20%;
+    text-align: right;
+    display: block;
+    float: left;
+    margin-right: 5%;
+}
+#bigbutton {
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+#tab { display:inline-block;
+       margin-left: 40px; }
+
+.clearfix:after {
+    display:block;
+    clear:both;
+}
+
+/*----- Menu Outline -----*/
+.menu-wrap {
+    width:100%;
+    box-shadow:0px 1px 3px rgba(0,0,0,0.2);
+    background:#3e3436;
+}
+
+.menu {
+    width:1000px;
+    margin:0px auto;
+}
+
+.menu li {
+    margin:0px;
+    list-style:none;
+    font-family:'Ek Mukta';
+}
+
+.menu a {
+    transition:all linear 0.15s;
+    color:#fff;
+}
+
+.menu li:hover > a, .menu .current-item > a {
+    text-decoration:none;
+    color:#be5b70;
+}
+
+.menu .arrow {
+    font-size:11px;
+    line-height:0%;
+}
+
+/*----- Top Level -----*/
+.menu > ul > li {
+    float:left;
+    display:inline-block;
+    position:relative;
+    font-size:19px;
+}
+
+.menu > ul > li > a {
+    padding:10px 40px;
+    display:inline-block;
+    text-shadow:0px 1px 0px rgba(0,0,0,0.4);
+}
+
+.menu > ul > li:hover > a, .menu > ul > .current-item > a {
+    background:#2e2728;
+}
+
+/*----- Bottom Level -----*/
+.menu li:hover .sub-menu {
+    z-index:1;
+    opacity:1;
+}
+
+.sub-menu {
+    width:160%;
+    padding:5px 0px;
+    position:absolute;
+    top:100%;
+    left:0px;
+    z-index:-1;
+    opacity:0;
+    transition:opacity linear 0.15s;
+    box-shadow:0px 2px 3px rgba(0,0,0,0.2);
+    background:#2e2728;
+}
+
+.sub-menu li {
+    display:block;
+    font-size:16px;
+}
+
+.sub-menu li a {
+    padding:10px 30px;
+    display:block;
+}
+
+.sub-menu li a:hover, .sub-menu .current-item a {
+    background:#3e3436;
+}
+
+#table1,#table21,#table22,#table23,#table24,#table25,#table2,#table211,#table212,#table213,#table214,#table215,#table216,#table217,#table218,#table219,#table31,#table32,#table33, #table4, #table5 {
+    display: none;
+}
+</style>
+
+<div class="container-fluid">
+<h4><ul class="nav navbar-nav navbar-right">
+                <li>site: {{ zones }}<span class="navbar-right"></span></li>&nbsp;
+                <li> | </li>
+                <li>{{ authDomain }}<span class="navbar-right"></span></li>&nbsp;
+                <li> | </li>
+                {% for val in user %}
+                <li>{{ val }}<span class="navbar-right"></span></li>
+                {% endfor %}
+			</ul></h4>
+        </div>
+
+
+<div class="container-fluid">
+<h3><span class="navbar-right"> <a href="/report/">Reports</a></span> </h3>
+</div>
+
+<form class="form-inline" action="" method="post">{% csrf_token %}
+
+        <div class="row">
+            <div class="col-sm-2" style="background-color:lavender;"><label for="customer">Select Customer</label></div>
+			<div class="col-sm-2">
+                <select name="customer" id="customer" class="form-control input-sm">
+                    <option value="">Select Customer</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2" style="background-color:lavender;"><label for="idd">Select Domain</label></div>
+			<div class="col-sm-2">
+                <select name="idd" id="idd" class="form-control input-sm">
+                    <option value="">Select IDD</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2" style="background-color:lavender;"><label for="zone">Select Endpoint Zone</label></div>
+			<div class="col-sm-2">
+                <select name="zone" id="zone" class="form-control input-sm">
+                    <option value="">Select Zone</option>
+                </select>
+            </div>
+        </div>
+
+
+        <h3>Enter your Login Credentials Here</h3>
+
+        <div class="row">
+  			<div class="col-sm-1" style="background-color:lavender;"><label for="username">USERNAME</label></div>
+			<div class="col-sm-2"><input class="form-control" type="text" name="username" required autofocus></div>
+        </div>
+        <div class="row">
+			<div class="col-sm-1" style="background-color:lavender;"><label for="password">PASSWORD</label></div>
+			<div class="col-sm-2"><input class="form-control" type="password" name="password" required autofocus></div>
+        </div>
+		<button type="submit" class="btn btn-primary btn-sm search" >LOGIN</button>
+</form>
+
+<script>
+$(document).ready(function(){
+
+ load_json_data('customer');
+
+ function load_json_data(id, parent_id)
+ {
+  var html_code = '';
+  var data=[
+ {
+  "id":"1",
+  "name":"OMCS",
+  "parent_id":"0"
+ },
+ {
+  "id":"2",
+  "name":"TMOBILE",
+  "parent_id":"0"
+ },
+ {
+  "id":"3",
+  "name":"PFIZER",
+  "parent_id":"0"
+ },
+ {
+  "id":"4",
+  "name":"ARCOR",
+  "parent_id":"0"
+ },
+ {
+  "id":"5",
+  "name":"BIMBO",
+  "parent_id":"0"
+ },
+ {
+  "id":"6",
+  "name":"CALYPSO",
+  "parent_id":"0"
+ },
+ {
+  "id":"7",
+  "name":"CARE_OMCSCARE",
+  "parent_id":"0"
+ },
+ {
+  "id":"8",
+  "name":"CMR",
+  "parent_id":"0"
+ },
+ {
+  "id":"9",
+  "name":"DOOSAN",
+  "parent_id":"0"
+ },
+ {
+  "id":"10",
+  "name":"DUKE",
+  "parent_id":"0"
+ },
+ {
+  "id":"11",
+  "name":"GEICO",
+  "parent_id":"0"
+ },
+ {
+  "id":"12",
+  "name":"NADEC",
+  "parent_id":"0"
+ },
+ {
+  "id":"13",
+  "name":"NASHVILLE",
+  "parent_id":"0"
+ },
+ {
+  "id":"14",
+  "name":"SEGURO",
+  "parent_id":"0"
+ },
+ {
+  "id":"15",
+  "name":"SITA",
+  "parent_id":"0"
+ },
+{
+  "id":"16",
+  "name":"SWISSRE",
+  "parent_id":"0"
+ },
+ {
+  "id":"17",
+  "name":"TESCO",
+  "parent_id":"0"
+ },
+ {
+  "id":"18",
+  "name":"TOKS",
+  "parent_id":"0"
+ },
+ {
+  "id":"19",
+  "name":"WVU",
+  "parent_id":"0"
+ },
+ {
+  "id":"omcsops",
+  "name":"omcsops",
+  "parent_id":"1"
+ },
+ {
+  "id":"21",
+  "name":"tmobile_a331462",
+  "parent_id":"2"
+ },
+ {
+  "id":"22",
+  "name":"tmobile_a344133",
+  "parent_id":"2"
+ },
+ {
+  "id":"23",
+  "name":"pfizer_a420588",
+  "parent_id":"3"
+ },
+ {
+  "id":"24",
+  "name":"pfizer_a420657_z14",
+  "parent_id":"3"
+ },
+ {
+  "id":"25",
+  "name":"pfizer_a420800",
+  "parent_id":"3"
+ },
+ {
+  "id":"26",
+  "name":"arcor_a428835_z30",
+  "parent_id":"4"
+ },
+ {
+  "id":"27",
+  "name":"arcor_arcorms1",
+  "parent_id":"4"
+ },
+ {
+  "id":"28",
+  "name":"arcor_arcorms2",
+  "parent_id":"4"
+ },
+ {
+  "id":"29",
+  "name":"bimbo_a421288",
+  "parent_id":"5"
+ },
+ {
+  "id":"30",
+  "name":"bimbo_edyg-dev2",
+  "parent_id":"5"
+ },
+ {
+  "id":"31",
+  "name":"calypso_a424951_z42",
+  "parent_id":"6"
+ },
+ {
+  "id":"32",
+  "name":"care_omcscare",
+  "parent_id":"7"
+ },
+ {
+  "id":"33",
+  "name":"cmr_a430124",
+  "parent_id":"8"
+ },
+ {
+  "id":"34",
+  "name":"doosan_a420697_z13",
+  "parent_id":"9"
+ },
+ {
+  "id":"35",
+  "name":"doosan_a420700",
+  "parent_id":"9"
+ },
+ {
+  "id":"36",
+  "name":"duke_a476291",
+  "parent_id":"10"
+ },
+ {
+  "id":"37",
+  "name":"geico_a442154",
+  "parent_id":"11"
+ },
+ {
+  "id":"38",
+  "name":"nadec_a474107",
+  "parent_id":"12"
+ },
+ {
+  "id":"39",
+  "name":"nadec_hcuk",
+  "parent_id":"12"
+ },
+ {
+  "id":"40",
+  "name":"nashville_a483153",
+  "parent_id":"13"
+ },
+ {
+  "id":"41",
+  "name":"seguro_a430820",
+  "parent_id":"14"
+ },
+ {
+  "id":"42",
+  "name":"sita_a432540",
+  "parent_id":"15"
+ },
+ {
+  "id":"43",
+  "name":"swissre_a429593",
+  "parent_id":"16"
+ },
+ {
+  "id":"44",
+  "name":"tesco_a423761",
+  "parent_id":"17"
+ },
+ {
+  "id":"45",
+  "name":"tesco_a423761",
+  "parent_id":"17"
+ },
+ {
+  "id":"46",
+  "name":"toks_a428748",
+  "parent_id":"18"
+ },
+ {
+  "id":"47",
+  "name":"wvu_a436177",
+  "parent_id":"19"
+ },
+ {
+  "id":"48",
+  "name":"EM2 Zone 17",
+  "parent_id":"omcsops"
+ },
+ {
+  "id":"49",
+  "name":"US2 Zone 31",
+  "parent_id":"21"
+ },
+ {
+  "id":"50",
+  "name":"US6 Zone 32",
+  "parent_id":"22"
+ },
+ {
+  "id":"51",
+  "name":"US2 Zone 36",
+  "parent_id":"23"
+ },
+ {
+  "id":"52",
+  "name":"US2 Zone 14",
+  "parent_id":"24"
+ },
+ {
+  "id":"53",
+  "name":"US6 Zone 34",
+  "parent_id":"25"
+ },
+ {
+  "id":"54",
+  "name":"US6 Zone 30",
+  "parent_id":"26"
+ },
+ {
+  "id":"55",
+  "name":"US2 Zone 51",
+  "parent_id":"27"
+ },
+ {
+  "id":"56",
+  "name":"US2 Zone 49",
+  "parent_id":"28"
+ },
+ {
+  "id":"57",
+  "name":"US6 Zone 26",
+  "parent_id":"29"
+ },
+ {
+  "id":"58",
+  "name":"US6 Zone 51",
+  "parent_id":"30"
+ },
+ {
+  "id":"59",
+  "name":"US2 Zone 42",
+  "parent_id":"31"
+ },
+ {
+  "id":"60",
+  "name":"US Commercial Central 1",
+  "parent_id":"32"
+ },
+ {
+  "id":"61",
+  "name":"US6 Zone 30",
+  "parent_id":"33"
+ },
+ {
+  "id":"62",
+  "name":"US6 Zone 13",
+  "parent_id":"34"
+ },
+ {
+  "id":"63",
+  "name":"US2 Zone 24",
+  "parent_id":"35"
+ },
+ {
+  "id":"64",
+  "name":"US Commercial Central 1",
+  "parent_id":"36"
+ },
+ {
+  "id":"65",
+  "name":"US Commercial Central 1",
+  "parent_id":"37"
+ },
+ {
+  "id":"66",
+  "name":"EM2 Zone 23",
+  "parent_id":"38"
+ },
+ {
+  "id":"67",
+  "name":"EM3 Zone 19",
+  "parent_id":"39"
+ },
+ {
+  "id":"68",
+  "name":"US Commercial Central 1",
+  "parent_id":"40"
+ },
+ {
+  "id":"69",
+  "name":"US6 Zone 21",
+  "parent_id":"41"
+ },
+ {
+  "id":"70",
+  "name":"EM3 Zone 31",
+  "parent_id":"42"
+ },
+ {
+  "id":"71",
+  "name":"EM3 Zone 16",
+  "parent_id":"43"
+ },
+ {
+  "id":"72",
+  "name":"EM2 Zone 19",
+  "parent_id":"44"
+ },
+ {
+  "id":"73",
+  "name":"EM3 Zone 25",
+  "parent_id":"45"
+ },
+ {
+  "id":"74",
+  "name":"US2 Zone 20",
+  "parent_id":"46"
+ },
+ {
+  "id":"75",
+  "name":"US Commercial Central 1",
+  "parent_id":"47"
+ },
+      {
+       "id":"76",
+       "name":"OMCSSERVICEDOM1",
+       "parent_id":"0"
+      },
+      {
+        "id":"omcsservicedom1",
+        "name":"omcsservicedom1",
+        "parent_id":"76"
+      },
+      {
+         "id":"US Commercial Central 1",
+        "name":"US Commercial Central 1",
+        "parent_id":"omcsservicedom1"
+      },
+      {
+         "id":"US Commercial East 1",
+        "name":"US Commercial East 1",
+        "parent_id":"omcsservicedom1"
+      },
+      {
+        "id":"EM2 Zone 16",
+        "name":"EM2 Zone 16",
+        "parent_id":"omcsops"
+      }
+
+]
+
+   html_code += '<option value="">Select '+id+'</option>';
+   $.each(data, function(key, value){
+    if(id == 'customer')
+    {
+     if(value.parent_id == '0')
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+    else
+    {
+     if(value.parent_id == parent_id)
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+   });
+   $('#'+id).html(html_code);
+
+
+ }
+
+ $(document).on('change', '#customer', function(){
+  var customer_id = $(this).val();
+  if(customer_id != '')
+  {
+   load_json_data('idd', customer_id);
+  }
+  else
+  {
+   $('#idd').html('<option value="">Select idd</option>');
+   $('#zone').html('<option value="">Select zone</option>');
+  }
+ });
+ $(document).on('change', '#idd', function(){
+  var idd_id = $(this).val();
+  if(idd_id != '')
+  {
+   load_json_data('zone', idd_id);
+  }
+  else
+  {
+   $('#zone').html('<option value="">Select zone</option>');
+  }
+ });
+});
+</script>
+
+    <body>
+<!-- List of uploaded documents -->
+<h3>Upload the Documents</h3>
+        <!-- Upload form. Note enctype attribute! -->
+        <form class="form-inline" action="" method="post" enctype="multipart/form-data">
+			<div class="form-group">
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+            <ul>
+                <h4><p>For Instructions click <a href="/help/">here</a></p></h4>
+            </ul>
+            <p>
+                {{ form.docfile }}
+            </p>
+            <p><input type="submit" value="Upload" /></p>
+			</div>
+        </form>
+    </body>
+
+<form class="form-inline" action="" method="post" id="new_form">{% csrf_token %}
+    <center><h3>Select the Network Type:</h3>
+    <input type="radio" name="network" value="sharedbtn" checked>Shared Network &nbsp;
+    <input type="radio" name="network" value="ipbtn" >IP Network</center> &nbsp;
+    <br>
+    <center><h3>Select the Product:</h3>
+    <input type="radio" name="product" value="global" checked>Global &nbsp;
+    <input type="radio" name="product" value="peoplesoft" >PeopleSoft &nbsp;
+    <input type="radio" name="product" value="ebs">EBS &nbsp;
+    <input type="radio" name="product" value="fmw">FMW &nbsp;
+    <input type="radio" name="product" value="jdedward">JDEdward</center>
+    <center><button class="btn btn-primary btn-sm search" type="submit" name="validbtn" >validate</button></center>
+    <button class="btn btn-primary btn-lg" type="submit" name="orchstnbtn" >Orchestrate</button>
+
+</form>
+
+
+    <script type="text/javascript">
+
+$(document).ready(function(){
+    //var rule_sec = "Prajwal";
+    //$('.drop').click(function() {
+    //var vals = $(this).closest('table').find('tr:contains("/Compute-omcsservicedom1/orchestration/Rule_SIL-Bastion_tcp1-65535_SL-OMCSSERVICEDOM1"):lt('+$(this).closest('tr').index()+'):last').find('td:eq(2)').text();
+    //alert(vals);
+
+//});
+
+	$(document).on('submit','#new_form_id', function (e){
+        var val = $(this).closest('table').find('tr:contains("/Compute-omcsservicedom1/orchestration/Rule_SIL-Bastion_tcp1-65535_SL-OMCSSERVICEDOM1"):lt('+$(this).closest('tr').index()+'):last').find('td:eq(2)').text();
+        console.log(val);
+        e.preventDefault();
+        $.ajax({
+                type:'POST',
+                url:'/prov/',
+                data:{
+                    'name': val,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success:function () {
+                    //alert("Displaying metadata of Security Rule having both Source & Destination are Seclist.");
+                    //$("#div2").fadeIn();
+                    //$('#secIps').html('<li>'+ rule_sec +'</li>');
+                    alert(val);
+
+
+                }
+            });
+	});
+});
+</script>
+
+
+
+<div id="fadeandscale" class="well well-sm">
+	<div id="div2" style="display:none;">
+			<div class="alert alert-success" role="alert">
+				<h3>SOURCE IP/NETWORK</h3>
+				<p id="secipHead"></p>
+				<ul id="secIps"></ul>
+			</div>
+	</div>
+</div>
+
+<form id="new_form_id">{% csrf_token %}
+    <table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>SecRule Name</th>
+		<th>SOURCE SECURITY LIST</th>
+		<th>DESTINATION SECURITY LIST</th>
+	</tr>
+	<tbody>
+		{% for a,b,c in missing %}
+		<tr>
+			<td>{{ a }}</td>
+			<td>{{ b }}</td>
+            <td>{{ c }}</td>
+            <td class="drop"><input type="submit" class="initialism fadeandscale_open btn btn-warning btn-block get-data" value="Show Hosts" name="ruleseclist" id="submit"/></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</form>
+
+    <table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>SecRule Name</th>
+        <th>SOURCE SECURITY LIST</th>
+		<th>DESTINATION SECURITY LIST</th>
+	</tr>
+	<tbody>
+		{% for a,b,c in missing %}
+		<tr>
+			<td>{{ a }}</td>
+			<td>{{ b }}</td>
+            <td>{{ c }}</td>
+            <td class="drop1"><input type="submit" class="initialism fadeandscale_open btn btn-warning btn-block get-data" value="Show Hosts" name="ruleseclist" id="submit"/></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+    <script>
+$('.drop1').click(function() {
+    //var val = $(this).closest('table').find('tr:contains("/Compute-omcsservicedom1/orchestration/Rule_SIL-Bastion_tcp1-65535_SL-OMCSSERVICEDOM1"):lt('+$(this).closest('tr').index()+'):last').find('td:eq(2)').text();
+    var $item = $(this).closest("tr").find('td');
+    $.each($item, function (key, value) {
+        var mysec = $(value).text();
+
+        /*$.ajax({
+            type : 'GET',
+            url: '/prov/getPublicIp/',
+            dataType: 'json',
+            data: {'seclist': mysec},
+            success: function (data) {
+                console.log(data);
+                for (i=0; i < data.length; i++){
+                    alert(data[i].private_ip);
+                }
+
+            }
+        });*/
+        alert(mysec);
+    });
+
+});
+</script>
+<!--<form class="form-inline" action="" method="post">{% csrf_token %}
+    <h3>Select the Network Type</h3>
+    <button class="btn btn-primary btn-sm search" type="submit" name="sharedbtn" >Shared Network</button>
+    <button class="btn btn-primary btn-sm search" type="submit" name="ipbtn" >IP Network</button>
+</form>!-->
+<!--    <form class="form-inline" action="" method="post">{% csrf_token %}
+    <button class="btn btn-primary btn-lg" type="submit" name="orchbtn" >Orchestrate</button>
+    </form>!-->
+
+<div class="container">
+    {%  if messages %}
+        <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% for message in messages %}
+                <p {% if message.tags == "info" %} class="alert alert-info"
+                {% elif message.tags == "warning" %} class="alert alert-warning"
+                {% elif message.tags == "success" %} class="alert alert-success"{% endif %}>{{ message }} </p>
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+</div>
+
+<h2>Compute Operations <br /><br /></h2>
+<form class="form-inline" action="" method="post">{% csrf_token %}
+    <div class="menu-wrap">
+    <nav class="menu">
+        <ul class="clearfix">
+            <li><a href="#" type="submit" onclick='show(1);' name="instsumbtn">Instances</a></li>
+            <li>
+                <a href="#" >Network <span class="arrow">&#9660;</span></a>
+                <ul class="sub-menu">
+                    <li><a href="#" >Shared Network <span class="arrow">&#9660;</span></a>
+                        <ul class="sub-menu1">
+                            <li><a href="#" type="submit" onclick='show(21);' name="secrulesumbtn" >Security Rule</a></li>
+                            <li><a href="#" type="submit" onclick='show(22);' name="seclistsumbtn" >Security Lists</a></li>
+                            <li><a href="#" type="submit" onclick='show(23);' name="secapplnsumbtn" >Security Applications</a></li>
+                            <li><a href="#" type="submit" onclick='show(24);' name="secipsumbtn" >Security IP Lists</a></li>
+                            <li><a href="#" type="submit" onclick='show(25);' name="ipreservesumbtn" >IP Reservations</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#" >IP Network <span class="arrow">&#9660;</span></a>
+                        <ul class="sub-menu2">
+                            <li><a href="#" type="submit" onclick='show(211);' name="secrulesumbtn" >IP Networks</a></li>
+                            <li><a href="#" type="submit" onclick='show(212);' name="seclistsumbtn" >IP Exchanges</a></li>
+                            <li><a href="#" type="submit" onclick='show(213);' name="secapplnsumbtn" >Virtual NIC Sets</a></li>
+                            <li><a href="#" type="submit" onclick='show(214);' name="secapplnsumbtn" >Routes</a></li>
+                            <li><a href="#" type="submit" onclick='show(215);' name="secapplnsumbtn" >Security Rules</a></li>
+                            <li><a href="#" type="submit" onclick='show(216);' name="secipsumbtn" >Access Control Lists</a></li>
+                            <li><a href="#" type="submit" onclick='show(217);' name="secipsumbtn" >Security Protocols</a></li>
+                            <li><a href="#" type="submit" onclick='show(218);' name="secipsumbtn" >IP Address Prefix Sets</a></li>
+                            <li><a href="#" type="submit" onclick='show(219);' name="ipreservesumbtn" >IP Reservations</a></li>
+                        </ul>
+                    <li><a href="#" type="submit" onclick='show(2);'>SSH Public Keys</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Storage <span class="arrow">&#9660;</span></a>
+                <ul class="sub-menu">
+                        <li><a href="#" type="submit" onclick='show(31);' name="storsumbtn" >Storage Volume</a></li>
+                        <li><a href="#" type="submit" onclick='show(32);'>Storage Snapshots</a></li>
+                        <li><a href="#" type="submit" onclick='show(33);'>Storage Schedules</a></li>
+                </ul>
+            </li>
+            <li><a href="#" type="submit" onclick='show(4);' name="orchsumbtn" >Orchestrations</a></li>
+            <li><a href="#" type="submit" onclick='show(5);' name="imgsumbtn" >Images</a></li>
+            <li><a href="#">OMCS</a>
+                <ul class="sub-menu">
+                        <li><a href="#" type="submit" onclick='show(61);'>Data Center</a></li>
+                        <li><a href="#" type="submit" onclick='show(62);'>Api</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>
+    </form>
+
+{% if instname != None %}
+<form style="background-color: #a4d3ee">
+    <div id="table1"> <h3>INSTANCES</h3>
+    <center><h4><span id="tab">instances: <font color="blue">{{ instname }}</font></span></h4>
+        <h4><span id="tab">OCPUs: <font color="blue">{{ ocpu }}</font></span></h4>
+        <b><u>Instances</u></b>
+        <h5>A Compute Classic instance is a virtual machine running a specific operating system, with the CPU and memory resources that you specify.</h5>
+    </center>
+    <br>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+        <th>NAME</th>
+        <th>STATE</th>
+        <th>CUSTOMER</th>
+        <th>ZONE</th>
+        <th>ACCOUNT</th>
+		<th>OS SIZE</th>
+        <th>SHAPE</th>
+        <th>IMAGE</th>
+        <th>HOSTLABEL</th>
+        <th>PUBLIC IP</th>
+        <th>PRIVATE HOSTNAME</th>
+        <th>PRIVATE IP</th>
+	</tr>
+	<tbody>
+    {% for val in instances %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.inst_state }}</td>
+            <td>{{ val.customer }}</td>
+            <td>{{ val.zone }}</td>
+            <td>{{ val.account }}</td>
+            <td>{{ val.size }}</td>
+            <td>{{ val.shape }}</td>
+            <td>{{ val.image }}</td>
+            <td>{{ val.label }}</td>
+            <td>{{ val.public_ip }}</td>
+            <td>{{ val.hostname }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.private_ip }}" name="instbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+{% endif %}
+
+<form>
+    <div id="table21"> <h4>Security Rules</h4>
+    <center><h4><span id="tab">security rules: <font color="blue">{{ secrulename }}</font></span></h4>
+            <h4><span id="tab">enabled: <font color="blue">{{ secruleenable }}</font></span></h4>
+        <b><u>Security Rules</u></b>
+        <h5>You can use security rules to control network access between your instances and the Internet. On this page, you can create, view, update, and delete security rules. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>APPLICATION</th>
+        <th>SOURCE</th>
+        <th>DESTINATION</th>
+	</tr>
+	<tbody>
+    {% for val in secrule %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.action }}</td>
+            <td>{{ val.application }}</td>
+            <td>{{ val.src_list }}</td>
+            <td>{{ val.dst_list }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="secrulebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+    <form>
+    <div id="table22"> <h4>Security Lists</h4>
+    <center><h4><span id="tab">security lists: <font color="blue">{{ seclistname }}</font></span></h4>
+            <h4><span id="tab">used: <font color="blue">{{ seclistused }}</font></span></h4>
+        <b><u>Security Lists</u></b>
+        <h5>A security list is a set of instances that you can specify as a source or destination in security rules. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>INBOUND</th>
+        <th>OUTBOUND</th>
+	</tr>
+	<tbody>
+    {% for val in seclists %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.policy }}</td>
+            <td>{{ val.outbound_cidr_policy }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="seclistbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+<form>
+    <div id="table23"> <h4>Security Applications</h4>
+    <center><h4><span id="tab">security applications: <font color="blue">{{ secapplnname }}</font></span></h4>
+            <h4><span id="tab">public: <font color="blue">{{ secapppublic }}</font></span></h4>
+        <b><u>Security Applications</u></b>
+        <h5>A security application is a protocol-type and port mapping, which you can define and then use in security rules to control traffic to/from instances. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>PORT TYPE</th>
+        <th>PORT RANGE/ICMP TYPE</th>
+	</tr>
+	<tbody>
+    {% for val in secapp %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.protocol }}</td>
+            <td>{{ val.dport }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="secappbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+<form>
+<form>
+    <div id="table24"> <h4>Security IP Lists</h4>
+    <center><h4><span id="tab">security IP lists: <font color="blue">{{ secipname }}</font></span></h4>
+            <h4><span id="tab">public: <font color="blue">{{ secippublic}}</font></span></h4>
+        <b><u>Security IP Lists</u></b>
+        <h5>A security IP list is a group of IP addresses or subnets that can be used in security rules. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>IP LIST</th>
+
+	</tr>
+	<tbody>
+    {% for val in secip %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.secipentries }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="secipbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+<form>
+    <div id="table25"> <h4>IP Reservation</h4>
+    <center><h4><span id="tab">IP reservations: <font color="blue">{{ ipreservename }}</font></span></h4>
+            <h4><span id="tab">used: <font color="blue">{{ ipreserveused }}</font></span></h4>
+        <b><u>IP Reservations</u></b>
+        <h5>You can reserve public IP addresses for instances that require network access to the internet. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>PUBLIC IP ADDRESS</th>
+        <th>STATUS</th>
+        <th>FOR INSTANCE</th>
+	</tr>
+	<tbody>
+    {% for val in ipresereve_data %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.permanent }}</td>
+            <td>{{ val.public_ip }}</td>
+            <td>{{ val.label }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table211"> <h4>IP Networks</h4>
+    <center><h4><span id="tab">IP networks: <font color="blue">{{ ipnetworkname }}</font></span></h4>
+        <b><u>IP Networks</u></b>
+        <h5>An IP network allows you to define an IP subnet in your account. The size of the IP subnet and the IP addresses
+            in the subnet are determined by the IP address prefix that you specify while creating the IP network. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>IP ADDRESS PREFIX</th>
+        <th>IP EXCHANGE</th>
+        <th>DESCRIPTION</th>
+	</tr>
+	<tbody>
+    {% for val in ipnetworks %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.ipAddressPrefix }}</td>
+            <td>{{ val.ipNetworkExchange }}</td>
+            <td>{{ val.description }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table212"> <h4>IP Exchanges</h4>
+    <center><h4><span id="tab">IP Exchanges: <font color="blue">{{ ipexchngname }}</font></span></h4>
+        <b><u>IP Exchanges</u></b>
+        <h5>An IP network exchange enables communication between IP networks that have non-overlapping addresses. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>DESCRIPTION</th>
+	</tr>
+	<tbody>
+    {% for val in ipexchanges %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.description }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table213"> <h4>Virtual NIC Sets</h4>
+    <center><h4><span id="tab">VNICsets: <font color="blue">{{ vnicsets }}</font></span></h4>
+        <b><u>Virtual NIC Sets</u></b>
+        <h5>A virtual NIC set is a collection of one or more vNICs. These vNICsets are used to specify the next hop address in a route. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>VNICs</th>
+        <th>Applied Access Control Lists</th>
+	</tr>
+	<tbody>
+    {% for val in VNICset %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.vnics }}</td>
+            <td>{{ val.appliedAcls }}</td>
+            <td>{{ val.description }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table214"> <h4>Routes</h4>
+    <center><h4><span id="tab">routes: <font color="blue"> - </font></span></h4>
+        <b><u>Routes</u></b>
+        <h5>A route specifies the IP address of the destination as well as a vNICset which provides the next hop for routing packets to the specified destination.
+            If there are multiple routes to a destination, the route with the lowest administrative distance is used. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <h4>No Routes available</h4>
+    </div>
+</form>
+
+<form>
+    <div id="table215"> <h4>Security Rules</h4>
+    <center><h4><span id="tab">security rules: <font color="blue">{{ ipsecrulename }}</font></span></h4>
+            <h4><span id="tab">enabled: <font color="blue">{{ ipsecruleenable }}</font></span></h4>
+        <b><u>Security Rules</u></b>
+        <h5>You can use security rules to control network access between your instances and the Internet. On this page, you can create, view, update, and delete security rules. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>TYPE</th>
+        <th>Access Control Lists</th>
+        <th>SECURITY PROTOCOLS</th>
+        <th>SOURCE</th>
+        <th>DESTINATION</th>
+	</tr>
+	<tbody>
+    {% for val in ipsecrule %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.enabledFlag }}</td>
+            <td>{{ val.flowdirection }}</td>
+            <td>{{ val.acl }}</td>
+            <td>{{ val.secProtocols }}</td>
+            <td>{{ val.srcVnicSet }}</td>
+            <td>{{ val.dstVnicSet }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table216"> <h4>Access Control Lists</h4>
+    <center><h4><span id="tab">access Control Lists: <font color="blue">{{ aclname }}</font></span></h4>
+            <h4><span id="tab">enabled: <font color="blue">{{ aclenable }}</font></span></h4>
+        <b><u>Access Control Lists</u></b>
+        <h5>An access control list (ACL) is a collection of security rules. After you create an ACL, you can add multiple security rules to it. You can then apply each ACL to one or more vNIC sets. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>STATUS</th>
+	</tr>
+	<tbody>
+    {% for val in acls %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.descriptionn }}</td>
+            <td>{{ val.enabledFlag }}</td>
+            <td>{{ val.dstVnicSet }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table217"> <h4>Security Protocols</h4>
+    <center><h4><span id="tab">security Protocols: <font color="blue">{{ aclname }}</font></span></h4>
+        <b><u>Security Protocols</u></b>
+        <h5>Specify a transport protocol and the source and destination ports to be used with each protocol. You can use security protocols in security rules, to determine the type of traffic that is permitted by each security rule. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>IP PROTOCOL</th>
+        <th>SOURCE PORT SET</th>
+        <th>DESTINATION PORT SET</th>
+	</tr>
+	<tbody>
+    {% for val in secprotocol %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.descriptionn }}</td>
+            <td>{{ val.ipProtocol }}</td>
+            <td>{{ val.srcPortSet }}</td>
+            <td>{{ val.dstPortSet }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table218"> <h4>IP Address Prefix Sets</h4>
+    <center><h4><span id="tab">IP address prefix sets: <font color="blue">{{ ipaddrprefixsetname }}</font></span></h4>
+        <b><u>IP Address Prefix Sets</u></b>
+        <h5>Specify a transport protocol and the source and destination ports to be used with each protocol. You can use security protocols in security rules, to determine the type of traffic that is permitted by each security rule. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>IP ADDRESS PREFIXES</th>
+	</tr>
+	<tbody>
+    {% for val in ipaddrprefixset %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.descriptionn }}</td>
+            <td>{{ val.ipAddressPrefixes }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table219"> <h4>IP Reservations</h4>
+    <center><h4><span id="tab">IP Reservations: <font color="blue">{{ ipnetworkreservename }}</font></span></h4>
+
+        <b><u>IP Reservations</u></b>
+        <h5>Specify a transport protocol and the source and destination ports to be used with each protocol. You can use security protocols in security rules, to determine the type of traffic that is permitted by each security rule. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>IP POOL</th>
+        <th>PUBLIC IP ADDRESS</th>
+	</tr>
+	<tbody>
+    {% for val in secprotocol %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.descriptionn }}</td>
+            <td>{{ val.ipAddressPool }}</td>
+            <td>{{ val.ipAddress }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="ipreservebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+
+<form>
+    <div id="table2"> <h4>SSH Public Keys</h4>
+    <center><h4><span id="tab">SSH keys: <font color="blue">{{ sshname }}</font></span></h4>
+            <h4><span id="tab">enabled: <font color="blue">{{ sshenabled }}</font></span></h4>
+
+        <b><u>SSH Public Keys</u></b>
+        <h5>You can use SSH keys to enable secure access to instances. </h5>
+    </center>
+    <br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>KEY VALUE</th>
+        <th>INSTANCE</th>
+	</tr>
+	<tbody>
+    {% for val in sshkey %}
+        <tr>
+            <td>{{ val.ssh_name }}</td>
+            <td>{{ val.enabled }}</td>
+            <td>{{ val.key }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.ssh_name }}" name="sshbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    </div>
+</form>
+<form>
+<div id="table31"> <h4>Storage Volume</h4>
+    <center><h4><span id="tab">volumes: <font color="blue">{{ volname }}</font></span></h4>
+            <h4><span id="tab">volume size: <font color="blue">{{ volsize }}TB</font></span></h4>
+
+        <b><u>Storage Volumes</u></b>
+        <h5>A storage volume is a virtual disk that provides block storage space for instances. </h5>
+    </center>
+    <br>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>SIZE</th>
+	</tr>
+	<tbody>
+    {% for val in storagevolume %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.status }}</td>
+            <td>{{ val.size }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="storagevolbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+</form>
+
+{% if orchname != None %}
+<form>
+<div id="table4"> <h4>Orchestrations</h4>
+    <center><h4><span id="tab">orchestrations: <font color="blue">{{ orchname }}</font></span></h4>
+            <h4><span id="tab">ready: <font color="blue">{{ orchstatus }}</font></span></h4>
+
+        <b><u>Orchestrations</u></b>
+        <h5>An orchestration defines the attributes and interdependencies of a collection of compute, networking, and storage resources.
+            After building an orchestration (in a JSON-formatted file) and adding it to the service, you can trigger the creation and removal of all the resources defined in the orchestration with a single step. </h5>
+    </center>
+    <br>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>STATUS</th>
+        <th>DESCRIPTION</th>
+	</tr>
+	<tbody>
+    {% for val in orchestration %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.status }}</td>
+            <td>{{ val.description }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.name }}" name="orchbtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+</form>
+{% endif %}
+
+{% if imgname != None %}
+<form>
+<div id="table5"> <h4>Images</h4>
+    <center><h4><span id="tab">images: <font color="blue">{{ imgname }}</font></span></h4>
+
+
+        <b><u>Private Images</u></b>
+        <h5>A private image is a template of a virtual hard disk with an installed operating system. Upload your private images
+            to Storage Classic, associate the images with Compute Classic, and use the images to launch instances. </h5>
+    </center>
+    <br>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>NAME</th>
+        <th>IMAGE FILE</th>
+        <th>DESCRIPTION</th>
+	</tr>
+	<tbody>
+    {% for val in images %}
+        <tr>
+            <td>{{ val.image_name }}</td>
+            <td>{{ val.image_name }}</td>
+            <td>{{ val.description }}</td>
+            <td class="col-md-4">
+                <form class="form-inline" action="" method="post">{% csrf_token %}
+                <button class="btn btn-primary btn-sm search" type="submit" value="{{ val.image_name }}" name="imagebtn" ></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+</form>
+{% endif %}
+
+<!--<script>
+function show(nr) {
+    document.getElementById("table"+nr).style.display="block";
+}
+</script>!-->
+<script type="text/javascript">
+    function show(nr) {
+        var e = document.getElementById("table"+nr);
+        if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+</script>
+
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
+
+<h3>INPUT ENTRIES</h3>
+<table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>FILE INPUT</th>
+        {% for val in data %}
+            <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+		<th>STATUS</th>
+        {% for val in fstatus %}
+            <td>{{ val }}</td>
+        {% endfor %}
+	</tr>
+    <tr>
+		<th>INVENTORY STATUS</th>
+        {% for val in fdbstatus %}
+            <td>{{ val }}</td>
+        {% endfor %}
+	</tr>
+</table>
+
+
+<!--    <h3>INVENTORY LOG</h3>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>AUTHDOMAIN</th>
+		<th>REST_URL</th>
+        <th>DCCODE</th>
+        <th>CUSTOMER</th>
+        <th>CUSTCODE</th>
+        <th>ZONE</th>
+        <th>PRIVATE IP</th>
+        <th>PRIVATE HOSTNAME</th>
+        <th>PUBLIC IP</th>
+        <th>ACCOUNT</th>
+		<th>OS SIZE</th>
+        <th>SHAPE</th>
+        <th>IMAGE</th>
+        <th>DATAVOLSIZE</th>
+        <th>APPINSTANCE</th>
+        <th>BACKUPVOLSIZE</th>
+        <th>HOSTLABEL</th>
+        <th>SECLIST</th>
+        <th>TIER TYPE</th>
+        <th>INSTANCE TYPE</th>
+        <th>SSH</th>
+        <th>PAGEVOLSIZE</th>
+		<th>EMVOLSIZE</th>
+        <th>DATACENTER</th>
+        <th>USER</th>
+	</tr>
+	<tbody>
+    {% for val in inventory %}
+        <tr>
+            <td>{{ val.authDomain }}</td>
+            <td>{{ val.url }}</td>
+            <td>{{ val.dccode }}</td>
+            <td>{{ val.customer }}</td>
+            <td>{{ val.custcode }}</td>
+            <td>{{ val.zone }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.private_hostname }}</td>
+            <td>{{ val.public_ip }}</td>
+            <td>{{ val.account }}</td>
+            <td>{{ val.size }}</td>
+            <td>{{ val.shape }}</td>
+            <td>{{ val.image }}</td>
+            <td>{{ val.datavolsize }}</td>
+            <td>{{ val.appinstance }}</td>
+            <td>{{ val.backupvolsize }}</td>
+            <td>{{ val.hostlabel }}</td>
+            <td>{{ val.seclist }}</td>
+            <td>{{ val.tier }}</td>
+            <td>{{ val.instance }}</td>
+            <td>{{ val.ssh }}</td>
+            <td>{{ val.pagevolsize }}</td>
+            <td>{{ val.emvolsize }}</td>
+            <td>{{ val.datacenter }}</td>
+            <td>{{ val.user }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <h3>PROVISIONING ENTRIES: Type 1</h3>
+
+<table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+    <tr>
+        <th>IDD</th>
+        {% for val in fauthDomain %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>REST_URL</th>
+        {% for val in furl %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>STORAGE</th>
+        {% for val in fstorage %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+		<th>DCCODE</th>
+        {% for val in fdccode %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>CUSTCODE</th>
+        {% for val in fcustcode %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>ACCOUNT</th>
+        {% for val in faccount %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>SHARED PRIVATE IP</th>
+        {% for val in fprivate %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>IP NETWORKS</th>
+        {% for val in fipnet %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>SHARED PUBLIC IP</th>
+        {% for val in fpublic %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>PLATFORM</th>
+        {% for val in fplatform %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>OS SIZE</th>
+        {% for val in fsize %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>SHAPES</th>
+        {% for val in fshape %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>IMAGES</th>
+        {% for val in fimage %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>DATAVOLSIZE(GB)</th>
+        {% for val in fdatavolsize %}
+        <td>{{ val }}</td>
+        {%  endfor %}
+    </tr>
+    <tr>
+        <th>APPINSTANCE</th>
+        {% for val in fappinstance %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>BACKUPVOLSIZE(GB)</th>
+        {% for val in fbackupvolsize %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>HOSTLABEL</th>
+        {% for val in fhostlabel %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>SECLIST</th>
+        {% for val in fseclist %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>TIER</th>
+        {% for val in ftier %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>INSTANCE TYPE</th>
+        {% for val in finstance %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>SSH_keys</th>
+        {% for val in fssh %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>PAGEVOLSIZE</th>
+        {% for val in fpagevolsize %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>EMVOLSIZE(GB)</th>
+        {% for val in femvolsize %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>DATACENTER</th>
+        {% for val in fdatacenter %}
+        <td>{{ val }}</td>
+        {% endfor %}
+    </tr>
+</table>
+
+ <h3>PROVISIONING ENTRIES: Type 2</h3>
+ {% for authDomain,url,storage,dccode,custcode,account,private,public,platform,size,shape,image,datavolsize,appinstance,backupvolsize,hostlabel,seclist,tier,instance,ssh,pagevolsize,emvolsize,datacenter in zipped_data %}
+    <table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+     <tr>
+        <th>IDD</th>
+        <td>{{ authDomain }}</td>
+    </tr>
+    <tr>
+        <th>REST_URL</th>
+        <td>{{ url }}</td>
+    </tr>
+    <tr>
+		<th>STORAGE</th>
+        <td>{{ storage }}</td>
+    </tr>
+    <tr>
+		<th>DCCODE</th>
+        <td>{{ dccode }}</td>
+    </tr>
+    <tr>
+        <th>CUSTCODE</th>
+        <td>{{ custcode }}</td>
+    </tr>
+    <tr>
+        <th>ACCOUNT</th>
+        <td>{{ account }}</td>
+    </tr>
+    <tr>
+        <th>SHARED PRIVATE IP</th>
+        <td>{{ private }}</td>
+    </tr>
+    <tr>
+        <th>SHARED PUBLIC IP</th>
+        <td>{{ public }}</td>
+    </tr>
+    <tr>
+        <th>PLATFORM</th>
+        <td>{{ platform }}</td>
+    </tr>
+    <tr>
+        <th>OS SIZE</th>
+        <td>{{ size }}</td>
+    </tr>
+    <tr>
+        <th>SHAPES</th>
+        <td>{{ shape }}</td>
+    </tr>
+    <tr>
+        <th>IMAGES</th>
+        <td>{{ image }}</td>
+    </tr>
+    <tr>
+        <th>DATAVOLSIZE(GB)</th>
+        <td>{{ datavolsize }}</td>
+    </tr>
+    <tr>
+        <th>APPINSTANCE</th>
+        <td>{{ appinstance }}</td>
+    </tr>
+    <tr>
+        <th>BACKUPVOLSIZE(GB)</th>
+        <td>{{ backupvolsize }}</td>
+    </tr>
+    <tr>
+        <th>HOSTLABEL</th>
+        <td>{{ hostlabel }}</td>
+    </tr>
+    <tr>
+        <th>SECLIST</th>
+        <td>{{ seclist }}</td>
+    </tr>
+    <tr>
+        <th>TIER</th>
+        <td>{{ tier }}</td>
+    </tr>
+    <tr>
+        <th>INSTANCE TYPE</th>
+        <td>{{ instance }}</td>
+    </tr>
+    <tr>
+        <th>SSH_keys</th>
+        <td>{{ ssh }}</td>
+    </tr>
+    <tr>
+        <th>PAGEVOLSIZE</th>
+        <td>{{ pagevolsize }}</td>
+    </tr>
+    <tr>
+        <th>EMVOLSIZE(GB)</th>
+        <td>{{ emvolsize }}</td>
+    </tr>
+    <tr>
+        <th>DATACENTER</th>
+        <td>{{ datacenter }}</td>
+    </tr>
+    </table>
+ {% endfor %} !-->
+
+    <script>
+var cell = $('td');
+
+cell.each(function() {
+var cell_value = $(this).html();
+if (cell_value == 'VALID')  {
+    $(this).css({'background' : '#00CC66'});
+} else if (cell_value == 'INVALID')  {
+    $(this).css({'background' : '#FFBF00'});
+} else if (cell_value == 'IGNORED')  {
+    $(this).css({'background' : '#FFBF00'});
+} else if (cell_value == 'EXISTS')  {
+    $(this).css({'background' : '#FF69B4'});
+} else if (cell_value == 'PUSHED')  {
+    $(this).css({'background' : '#00CC66'});
+}
+});
+</script>
+
+
+<script src="{% static 'js/jquery.popupoverlay.js' %}"></script>
+
+{% endblock %}

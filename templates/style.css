@@ -1,0 +1,19 @@
+
+td {
+    vertical-align: top;
+}
+#table1, #table2, #table3, #table4 {
+    display: none;
+}
+
+.button {
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+
+

@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head_title %} Welcome |  {% endblock %}
+
+{% block valid %}
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Webslesson Tutorial | JSON - Dynamic Dependent Dropdown List using Jquery and Ajax</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ </head>
+ <body>
+  <br /><br />
+  <div class="container" style="width:600px;">
+   <h2 align="center">JSON - Dynamic Dependent Dropdown List using Jquery and Ajax</h2><br /><br />
+   <select name="customer" id="customer" class="form-control input-lg">
+    <option value="">Select Customer</option>
+   </select>
+   <br />
+   <select name="idd" id="idd" class="form-control input-lg">
+    <option value="">Select IDD</option>
+   </select>
+   <br />
+   <select name="zone" id="zone" class="form-control input-lg">
+    <option value="">Select Zone</option>
+   </select>
+  </div>
+ </body>
+</html>
+
+
+<script
+         src = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js">
+      </script>
+
+      <link rel = "stylesheet"
+         href = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family = Material+Icons">
+      <style>
+         .wide-card.mdl-card {
+            width: 512px;
+         }
+
+         .square-card.mdl-card {
+            width: 256px;
+            height: 256px;
+         }
+
+         .image-card.mdl-card {
+            width: 256px;
+            height: 256px;
+            background: url('html5-mini-logo.jpg') center / cover;
+         }
+
+         .image-card-image__filename {
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+         }
+
+         .event-card.mdl-card {
+            width: 256px;
+            height: 256px;
+            background: #3E4EB8;
+         }
+
+         .event-card.mdl-card__title {
+            color: #fff;
+            height: 176px;
+         }
+
+         .event-card > .mdl-card__actions {
+            border-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            box-sizing:border-box;
+            align-items: center;
+            color: #fff;
+         }
+      </style>
+
+<div class="mdl-card__supporting-text">
+    <form id="new_form_form">{% csrf_token %}
+        <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="name" />
+            <label class="mdl-textfield__label" for="name">Name</label>
+            <span class="mdl-textfield__error"></span>
+        </div>
+        <br/>
+        <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="email" id="email" />
+            <label class="mdl-textfield__label" for="email">Email</label>
+            <span class="mdl-textfield__error"></span>
+        </div>
+        <br/>
+        <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="password" id="password" />
+            <label class="mdl-textfield__label" for="password">Password</label>
+            <span class="mdl-textfield__error"></span>
+        </div>
+
+        <div class="mdl-card__actions mdl-card--border">
+            <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" value="SUBMIT" id="submit"/>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+
+        $(document).on('submit','#new_form_form', function (e) {
+                e.preventDefault();
+
+            $.ajax({
+                type:'POST',
+                url:'/validviews/',
+                data:{
+                    name:$('#name').val(),
+                    email:$('#email').val(),
+                    password:$('#password').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success:function () {
+                    alert("success...success...");
+                }
+            });
+        });
+
+</script>
+
+
+<script>
+$(document).ready(function(){
+
+ load_json_data('customer');
+
+ function load_json_data(id, parent_id)
+ {
+  var html_code = '';
+  var data=[
+ {
+  "id":"1",
+  "name":"OMCS",
+  "parent_id":"0"
+ },
+ {
+  "id":"2",
+  "name":"TMOBILE",
+  "parent_id":"0"
+ },
+ {
+  "id":"3",
+  "name":"PFIZER",
+  "parent_id":"0"
+ },
+ {
+  "id":"4",
+  "name":"omcsops",
+  "parent_id":"1"
+ },
+ {
+  "id":"5",
+  "name":"tmobile_a331462",
+  "parent_id":"2"
+ },
+ {
+  "id":"6",
+  "name":"tmobile_a344133",
+  "parent_id":"2"
+ },
+ {
+  "id":"7",
+  "name":"pfizer_a420588",
+  "parent_id":"3"
+ },
+ {
+  "id":"8",
+  "name":"pfizer_a420657_z14",
+  "parent_id":"3"
+ },
+ {
+  "id":"9",
+  "name":"pfizer_a420800",
+  "parent_id":"3"
+ },
+ {
+  "id":"10",
+  "name":"EM2 Zone 17",
+  "parent_id":"4"
+ },
+ {
+  "id":"11",
+  "name":"US2 Zone 31",
+  "parent_id":"5"
+ },
+ {
+  "id":"12",
+  "name":"US6 Zone 32",
+  "parent_id":"6"
+ },
+ {
+  "id":"13",
+  "name":"US2 Zone 36",
+  "parent_id":"7"
+ },
+ {
+  "id":"14",
+  "name":"US2 Zone 14",
+  "parent_id":"8"
+ },
+ {
+  "id":"15",
+  "name":"US6 Zone 34",
+  "parent_id":"9"
+ },
+
+]
+
+   html_code += '<option value="">Select '+id+'</option>';
+   $.each(data, function(key, value){
+    if(id == 'customer')
+    {
+     if(value.parent_id == '0')
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+    else
+    {
+     if(value.parent_id == parent_id)
+     {
+      html_code += '<option value="'+value.id+'">'+value.name+'</option>';
+     }
+    }
+   });
+   $('#'+id).html(html_code);
+
+
+ }
+
+ $(document).on('change', '#customer', function(){
+  var customer_id = $(this).val();
+  if(customer_id != '')
+  {
+   load_json_data('idd', customer_id);
+  }
+  else
+  {
+   $('#idd').html('<option value="">Select idd</option>');
+   $('#zone').html('<option value="">Select zone</option>');
+  }
+ });
+ $(document).on('change', '#idd', function(){
+  var idd_id = $(this).val();
+  if(idd_id != '')
+  {
+   load_json_data('zone', idd_id);
+  }
+  else
+  {
+   $('#zone').html('<option value="">Select zone</option>');
+  }
+ });
+});
+</script>
+
+    <table class="animals">
+    <tr>
+        <td> cat </td>
+        <td> dog </td>
+        <td> tiger </td>
+    </tr>
+    <tr>
+        <td> dog-1 </td>
+        <td> dog-2 </td>
+        <td> dog-3 </td>
+        <td> <a href="#" class="drop">click1</a> </td>
+    </tr>
+    <tr>
+        <td> cat </td>
+        <td> mouse </td>
+        <td> horse </td>
+    </tr>
+    <tr>
+        <td> lion </td>
+        <td> zebra </td>
+        <td> camel </td>
+        <td> <a href="#" class="drop">click2</a> </td>
+    </tr>
+    <tr>
+        <td> goat </td>
+        <td> cow </td>
+        <td> sheep </td>
+        <td> <a href="#" class="drop">click3</a> </td>
+    </tr>
+</table>
+
+<script>
+$('.drop').click(function() {
+    var val = $(this).closest('table').find('tr:contains("cat"):lt('+$(this).closest('tr').index()+'):last').find('td:eq(2)').text();
+    console.log(val);
+    alert(val);
+});
+</script>
+
+{% endblock %}

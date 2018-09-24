@@ -1,0 +1,517 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block report %}
+
+    <style>
+    #table1,#table21,#table22,#table23,#table24,#table25,#table2,#table211,#table212,#table213,#table214,#table215,#table216,#table217,#table218,#table219,#table31,#table32,#table33, #table4, #table5 {
+    display: none;
+}
+    </style>
+
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+<form class="form-inline" action="" method="post">{% csrf_token %}
+  <div class="row">
+    <div class="col-xs-6 col-md-4">
+      <div class="input-group">
+   <input type="text" class="form-control" placeholder="Search" id="txtSearch" name="term"/>
+
+   <div class="input-group-btn">
+        <button class="btn btn-primary" type="submit" name="strsearch">
+        <span class="glyphicon glyphicon-search"></span>
+        </button>
+   </div>
+   </div>
+    </div>
+      <input type="checkbox" name="report" value="instance">Instance &nbsp;
+      <input type="checkbox" name="report" value="network">Network &nbsp;
+      <input type="checkbox" name="report" value="storage">Storage &nbsp;
+      <input type="checkbox" name="report" value="orchestrations">Orchestrations &nbsp;
+      <input type="checkbox" name="report" value="images">Images
+  </div>
+</form>
+
+
+    <div class="container">
+    {%  if messages %}
+        <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% for message in messages %}
+                <p {% if message.tags == "info" %} class="alert alert-info"
+                {% elif message.tags == "warning" %} class="alert alert-warning"
+                {% elif message.tags == "success" %} class="alert alert-success"{% endif %}>{{ message }} </p>
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+</div>
+
+<h3>{{ authDomain }} :OMCS @ OPC Trial Domain Weekly Resource Report</h3>
+<table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+<tr>
+    <th>location</th>
+    <th>instance_count</th>
+    <th>eip_count</th>
+    <th>total_cpu_allocated</th>
+    <th>total_cpu_used</th>
+    <th>cpu_available</th>
+    <th>total_block_storage_allocated_gb</th>
+    <th>total_block_storage_used_gb</th>
+    <th>block_storage_available_gb</th>
+    <th>total_object_storage_allocated_gb</th>
+    <th>total_object_storage_used_gb</th>
+    <th>object_storage_available_gb</th>
+</tr>
+<tbody>
+<tr>
+    <td>{{ location }}</td>
+    <td>{{ instance_count }}</td>
+    <td>{{ eip_count }}</td>
+    <td>{{ total_cpu_allocated }}</td>
+    <td>{{ total_cpu_used }}</td>
+    <td>{{ cpu_available }}</td>
+    <td>{{ total_block_storage_allocated_gb }}</td>
+    <td>{{ total_block_storage_used_gb }}</td>
+    <td>{{ block_storage_available_gb }}</td>
+    <td>{{ total_object_storage_allocated_gb }}</td>
+    <td>{{ total_object_storage_used_gb }}</td>
+    <td>{{ object_storage_available_gb }}</td>
+</tr>
+</tbody>
+</table>
+
+<!--    <form class="form-inline" action="" method="post">{% csrf_token %}
+<button class="btn btn-primary btn-sm" type="submit" name="ruleseclistbtn" >Seclist</button>
+    </form>!-->
+
+    <script
+         src = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js">
+      </script>
+
+      <link rel = "stylesheet"
+         href = "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family = Material+Icons">
+      <style>
+         .wide-card.mdl-card {
+            width: 512px;
+         }
+
+         .square-card.mdl-card {
+            width: 256px;
+            height: 256px;
+         }
+
+         .image-card.mdl-card {
+            width: 256px;
+            height: 256px;
+            background: url('html5-mini-logo.jpg') center / cover;
+         }
+
+         .image-card-image__filename {
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+         }
+
+         .event-card.mdl-card {
+            width: 256px;
+            height: 256px;
+            background: #3E4EB8;
+         }
+
+         .event-card.mdl-card__title {
+            color: #fff;
+            height: 176px;
+         }
+
+         .event-card > .mdl-card__actions {
+            border-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            box-sizing:border-box;
+            align-items: center;
+            color: #fff;
+         }
+      </style>
+
+
+<div class="mdl-card__supporting-text">
+    <form id="new_form_form">{% csrf_token %}
+
+        <div class="mdl-card__actions mdl-card--border">
+            <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" value="Seclist" name="ruleseclist" id="submit"/>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+        var rule_sec = "{{ rseclist }}";
+            $(document).on('submit','#new_form_form', function (e) {
+                e.preventDefault();
+
+            $.ajax({
+                type:'POST',
+                url:'/report/',
+                data:{
+                    'name': rule_sec,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success:function () {
+                    alert("Displaying metadata of Security Rule having both Source & Destination are Seclist.");
+                    $("#div2").fadeIn();
+                    $('#secIps').html('<li>'+ rule_sec +'</li>');
+
+
+                }
+            });
+        });
+});
+</script>
+
+
+<div id="div2" style="display:none;">
+			<div class="alert alert-success" role="alert">
+				<h4>Rule(s) with Seclists</h4>
+				<p id="secipHead"></p>
+				<ul id="secIps"></ul>
+			</div>
+	</div>
+
+
+
+<!--{% if rule_seclist != None %}
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>SECURITY RULE NAME</th>
+	</tr>
+	<tbody>
+    {% for val in rule_seclist %}
+        <tr>
+            <td>{{ val.name }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}!-->
+
+{% if instances != None %}
+    <h3>INSTANCE REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+        <th>INSTANCE NAME</th>
+        <th>DOMAIN</th>
+        <th>STATE</th>
+        <th>VNC</th>
+        <th>STORAGE_NAME</th>
+        <th>FINGERPRINT</th>
+        <th>PRIVATE IP</th>
+        <th>LABEL</th>
+        <th>PLATFORM</th>
+        <th>SHAPE</th>
+        <th>SECLISTS</th>
+        <th>IMAGELIST</th>
+        <th>LOCATION</th>
+        <th>TOTAL BLOCK STORAGE USED(in TB)</th>
+        <th>TOTAL CPU USED</th>
+	</tr>
+	<tbody>
+    {% for val in reports_instances %}
+        <tr>
+            <td>{{ val.inst_name }}</td>
+            <td>{{ val.inst_domain }}</td>
+            <td>{{ val.state }}</td>
+            <td>{{ val.vnc }}</td>
+            <td>{{ val.storage_name }}</td>
+            <td>{{ val.fingerprint }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.label }}</td>
+            <td>{{ val.platform }}</td>
+            <td>{{ val.shape }}</td>
+            <td>{{ val.inst_seclist }}</td>
+            <td>{{ val.inst_imagelist }}</td>
+            <td>{{ val.location }}</td>
+            <td>{{ val.total_block_storage_used }}</td>
+            <td>{{ val.total_cpu_used }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+
+{% if shared != None %}
+    <h3>NETWORK REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+    <h3>SHARED NETWORKS</h3>
+	<tr>
+        <th>SECRULE NAME</th>
+        <th>APPLICATION</th>
+        <th>SOURCE</th>
+        <th>DESTINATION</th>
+        <th>DISABLED</th>
+        <th>ACTION</th>
+        <th>PROTOCOL</th>
+        <th>DPORT</th>
+        <th>INSTANCE NAME</th>
+        <th>INSTANCE SHAPE</th>
+        <th>INSTANCE LABEL</th>
+        <th>INSTANCE SECLIST</th>
+        <th>PRIVATE IP</th>
+        <th>STATE</th>
+        <th>IMAGELIST</th>
+        <th>SSH NAME</th>
+        <th>LOCATION</th>
+        <th>TOTAL BLOCK STORAGE USED(in TB)</th>
+        <th>TOTAL CPU USED</th>
+        <th>OUTBOUND CIDR POLICY</th>
+        <th>POLICY</th>
+        <th>PUBLIC IP</th>
+        <th>PARENTPOOL</th>
+        <th>TIME STAMP</th>
+	</tr>
+	<tbody>
+    {% for val in reports_shared %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.application }}</td>
+            <td>{{ val.src_list }}</td>
+            <td>{{ val.dst_list }}</td>
+            <td>{{ val.disabled }}</td>
+            <td>{{ val.action }}</td>
+            <td>{{ val.protocol }}</td>
+            <td>{{ val.dport }}</td>
+            <td>{{ val.inst_name }}</td>
+            <td>{{ val.inst_shape }}</td>
+            <td>{{ val.inst_label }}</td>
+            <td>{{ val.inst_seclist }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.state }}</td>
+            <td>{{ val.imagelist }}</td>
+            <td>{{ val.ssh_name }}</td>
+            <td>{{ val.location }}</td>
+            <td>{{ val.total_block_storage_used }}</td>
+            <td>{{ val.total_cpu_used }}</td>
+            <td>{{ val.outbound_cidr_policy }}</td>
+            <td>{{ val.policy }}</td>
+            <td>{{ val.public_ip }}</td>
+            <td>{{ val.parentpool }}</td>
+            <td>{{ val.time_stamp }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+{% if ip != None %}
+    <h3>NETWORK REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+    <h3>IP NETWORKS</h3>
+	<tr>
+        <th>IP SECURITY RULE NAME</th>
+        <th>DESCRIPTION</th>
+        <th>ACL</th>
+        <th>FLOWDIRECTION</th>
+        <th>SOURCE VNICSET</th>
+        <th>DESTINATION VNICSET</th>
+        <th>SOURCE IPADDRESS PREFIXSETS</th>
+        <th>DESTINATION IPADDRESS PREFIXSETS</th>
+        <th>SECURITY PROTOCOLS</th>
+        <th>ENABLED FLAG</th>
+        <th>IPADDRESS PREFIXES</th>
+        <th>IP PROTOCOL</th>
+        <th>SOUCE PORTSET</th>
+        <th>DESTINATION PORTSET</th>
+        <th>TIME STAMP</th>
+	</tr>
+	<tbody>
+    {% for val in reports_ip %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.description }}</td>
+            <td>{{ val.acl }}</td>
+            <td>{{ val.flowdirection }}</td>
+            <td>{{ val.srcVnicSet }}</td>
+            <td>{{ val.dstVnicSet }}</td>
+            <td>{{ val.srcIpAddressPrefixSets }}</td>
+            <td>{{ val.dstIpAddressPrefixSets }}</td>
+            <td>{{ val.secProtocols }}</td>
+            <td>{{ val.enabledFlag }}</td>
+            <td>{{ val.ipAddressPrefixes }}</td>
+            <td>{{ val.ipProtocol }}</td>
+            <td>{{ val.srcPortSet }}</td>
+            <td>{{ val.dstPortSet }}</td>
+            <td>{{ val.time_stamp }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+
+
+{% if storage != None %}
+    <h3>STORAGE REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+        <th>STORAGE NAME</th>
+        <th>STATUS</th>
+        <th>ACCOUNT</th>
+        <th>WRITECACHE</th>
+        <th>MANAGED</th>
+        <th>STATUS</th>
+        <th>DESCRIPTION</th>
+        <th>TAGS</th>
+        <th>BOOTABLE</th>
+        <th>HYPERVISOR</th>
+        <th>QUOTA</th>
+        <th>URI</th>
+        <th>STATUS DETAIL</th>
+        <th>IMAGELIST ENTRY</th>
+        <th>STORAGE POOL</th>
+        <th>MACHINE IMAGE</th>
+        <th>STATUS TIMESTAMP</th>
+        <th>SHARED</th>
+        <th>IMAGELIST</th>
+        <th>SIZE</th>
+        <th>PROPERTIES</th>
+        <th>INSTANCE NAME</th>
+        <th>INSTANCE SHAPE</th>
+        <th>INSTANCE LABEL</th>
+        <th>INSTANCE SECLIST</th>
+        <th>PRIVATE IP</th>
+        <th>STATE</th>
+        <th>SSH NAME</th>
+        <th>LOCATION</th>
+        <th>TOTAL BLOCK STORAGE USED(in TB)</th>
+        <th>TOTAL CPU USED</th>
+    </tr>
+    <tbody>
+    {% for val in reports_storage %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.status }}</td>
+            <td>{{ val.account }}</td>
+            <td>{{ val.writecache }}</td>
+            <td>{{ val.managed }}</td>
+            <td>{{ val.status }}</td>
+            <td>{{ val.description }}</td>
+            <td>{{ val.tags }}</td>
+            <td>{{ val.bootable }}</td>
+            <td>{{ val.hypervisor }}</td>
+            <td>{{ val.quota }}</td>
+            <td>{{ val.uri }}</td>
+            <td>{{ val.status_detail }}</td>
+            <td>{{ val.imagelist_entry }}</td>
+            <td>{{ val.storage_pool }}</td>
+            <td>{{ val.machineimage }}</td>
+            <td>{{ val.status_timestamp }}</td>
+            <td>{{ val.shared }}</td>
+            <td>{{ val.imagelist }}</td>
+            <td>{{ val.size }}</td>
+            <td>{{ val.properties }}</td>
+            <td>{{ val.inst_name }}</td>
+            <td>{{ val.inst_shape }}</td>
+            <td>{{ val.inst_label }}</td>
+            <td>{{ val.inst_seclist }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.state }}</td>
+            <td>{{ val.ssh_name }}</td>
+            <td>{{ val.location }}</td>
+            <td>{{ val.total_block_storage_used }}</td>
+            <td>{{ val.total_cpu_used }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+
+{% if orchestration != None %}
+    <h3>ORCHESTRATION REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+    <tr>
+    <th>ORCHESTRATION NAME</th>
+    <th>STATUS</th>
+    <th>DESCRIPTION</th>
+    <th>SCHEDULE</th>
+    <th>URI</th>
+    <th>ACCOUNT</th>
+    <th>INSTANCE NAME</th>
+    <th>INSTANCE SHAPE</th>
+    <th>INSTANCE LABEL</th>
+    <th>INSTANCE SECLIST</th>
+    <th>PRIVATE IP</th>
+    <th>STATE</th>
+    <th>STORAGE NAME</th>
+    <th>IMAGELIST</th>
+    <th>SSH NAME</th>
+    <th>LOCATION</th>
+    <th>TOTAL BLOCK STORAGE USED(in TB)</th>
+    <th>TOTAL CPU USED</th>
+    </tr>
+    <tbody>
+    {% for val in reports_orch %}
+        <tr>
+            <td>{{ val.name }}</td>
+            <td>{{ val.status }}</td>
+            <td>{{ val.description }}</td>
+            <td>{{ val.schedule }}</td>
+            <td>{{ val.uri }}</td>
+            <td>{{ val.account }}</td>
+            <td>{{ val.inst_name }}</td>
+            <td>{{ val.inst_shape }}</td>
+            <td>{{ val.inst_label }}</td>
+            <td>{{ val.inst_seclist }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.state }}</td>
+            <td>{{ val.storage }}</td>
+            <td>{{ val.imagelist }}</td>
+            <td>{{ val.ssh_name }}</td>
+            <td>{{ val.location }}</td>
+            <td>{{ val.total_block_storage_used }}</td>
+            <td>{{ val.total_cpu_used }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+{% endif %}
+
+{% if image != None %}
+    <h3>IMAGE REPORT</h3>
+    <table id="myTable" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+        <th>IMAGE NAME</th>
+        <th>LOCATION</th>
+        <th>TOTAL BLOCK STORAGE USED(in TB)</th>
+        <th>TOTAL CPU USED</th>
+        <th>INSTANCE NAME</th>
+        <th>INSTANCE SHAPE</th>
+        <th>INSTANCE SECLIST</th>
+        <th>PRIVATE IP</th>
+        <th>STORAGE NAME</th>
+        <th>SSH NAME</th>
+        <th>IPRESERVATION</th>
+    </tr>
+    <tbody>
+    {% for val in reports_image %}
+        <tr>
+            <td>{{ val.image_name }}</td>
+            <td>{{ val.location }}</td>
+            <td>{{ val.total_block_storage_used }}</td>
+            <td>{{ val.total_cpu_used }}</td>
+            <td>{{ val.inst_name }}</td>
+            <td>{{ val.inst_shape }}</td>
+            <td>{{ val.inst_seclist }}</td>
+            <td>{{ val.private_ip }}</td>
+            <td>{{ val.storage }}</td>
+            <td>{{ val.ssh_name }}</td>
+            <td>{{ val.ipreserve }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{%  endif %}
+
+<script src="{% static 'js/jquery.popupoverlay.js' %}"></script>
+
+{% endblock %}

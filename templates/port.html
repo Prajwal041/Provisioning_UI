@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head_title %} Welcome |  {% endblock %}
+
+{% block port %}
+
+<script>
+$(document).ready(function(){
+	
+	 $('#fadeandscale').popup({
+        pagecontainer: '.container',
+        transition: 'all 0.3s'
+	 });
+	
+	$(document).on('click','.get-data', 'button' ,function(){
+	    var $item = $(this).closest("tr").find('td');
+	    $.each($item, function(key, value){
+	        	var mysec = $(value).text().split(":");
+	    		if (mysec[0] === "seclist") {
+	        		console.log(mysec[1]);
+	    			$.ajax({
+	        			type: 'GET',
+	        			url: '/opcweb/getPublicIp/',
+	        			dataType: 'json',
+	        			data: {'seclist': mysec[1]},
+	        			success: function(data){
+	        				$("#div1").fadeIn();
+	        				$('#publicipHead').html('<p>' + mysec[1] + '</p>');
+	        				for (i=0; i < data.length; i++){
+	        					$('#publicIp').html('<li>'+ data[i].public_ip+'</li>');
+	        				}
+	        				if (data.length < 1) {
+	        					$('#publicIp').html("<li>No associated IP found</li>");
+	        				}
+	        			}
+	        		});
+	    		}	    		
+	    		
+	            if (mysec[0] === "seciplist") {	 
+	            	$("#secIps").empty();
+	            	$("#secipHead").empty();
+	            	
+	            	$.ajax({
+	        			type: 'GET',
+	        			url: '/opcweb/getSecIpListHosts/',
+	        			dataType: 'json',
+	        			data: {'seciplist': mysec[1]},
+	        			success: function(data){
+	        				$("#div2").fadeIn();
+	        				$('#secipHead').append('<p>' + mysec[1] + '</p>'); 
+	        				for (i=0; i < data.length; i++) {
+	        					$('#secIps').append('<li>'+ data[i].secipentries +'</li>')
+	        				}
+	        				if (data.length < 1) {
+	        					$('#secIps').html("<li>No associated IP found</li>");
+	        				}
+	        			}
+	        		});
+	        	}	    		
+	    });
+	});
+});	
+</script>
+
+
+<form class="form-inline" action="" method="get">{% csrf_token %}
+	<div class="form-group">
+  		<label for="Port">PORT</label>
+      	<input class="form-control" type="text" name="port" required autofocus>
+      </div>	    
+     	
+    <form class="form-inline" action="" method="get">{% csrf_token %}
+    	<div class="form-group">
+    		<label for="domain">DOMAIN</label>
+    		<select class="form-control input-sm" name="domain">
+    			{% for domain in domain_data %}
+        			<option value={{ domain.domain }} />{{ domain.domain }}</option>
+        		{% endfor %}
+        	</select>
+    		<button type="submit" class="btn btn-primary btn-sm search" >SEARCH</button>
+    	</div>	
+    </form>
+</form>	    
+
+<br>
+<br>
+		
+<table id="div4" class="table table-responsive table-hover table-bordered tablesorter">
+	<tr>
+		<th>PORT: {{ port }}</th>
+		<th>SOURCE SECURITY LIST</th>
+		<th>DESTINATION SECURITY LIST</th>
+	</tr>
+	<tbody>
+		{% for inst_data in instance_data %}
+		<tr>
+			<td><button type="button" class="initialism fadeandscale_open btn btn-warning btn-block get-data"> Show Hosts</button></td>
+			<td>{{ inst_data.source_sec_list }}</td>
+			<td>{{ inst_data.dest_sec_list }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+
+<div id="fadeandscale" class="well well-sm">		
+	<div id="div2" style="display:none;">
+			<div class="alert alert-success" role="alert">
+				<h3>SOURCE IP/NETWORK</h3>
+				<p id="secipHead"></p>
+				<ul id="secIps"></ul>
+			</div>	
+	</div>
+
+	<div id="div1" style="display:none;">
+			<div class="alert alert-info" role="alert">
+				<h3>DESTINATION IP/NETWORK</h3>
+				<p id="publicipHead"></p>				
+				<ul id="publicIp"></ul>
+			</div>	
+	</div>
+		
+	<button class="fadeandscale_close btn btn-primary btn-block">Close</button>
+</div>
+
+<script src="{% static 'js/jquery.popupoverlay.js' %}"></script>
+
+	
+{% endblock %}
