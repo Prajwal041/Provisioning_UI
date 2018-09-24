@@ -1,3 +1,4 @@
+# Define your views here
 from django.shortcuts import render, render_to_response,redirect
 from app.OracleComputeCloud import OracleComputeCloud
 from django.views.decorators.csrf import csrf_exempt,csrf_protect,ensure_csrf_cookie
